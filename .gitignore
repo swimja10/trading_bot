@@ -1,0 +1,6 @@
+venv/
+.venv/
+config.py
+EURUSD1M.json
+__pycache__/
+*.pyc
