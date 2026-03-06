@@ -110,16 +110,20 @@ def run_bot():
     
     while True:
         current_time = datetime.now(timezone.utc)
-        if get_trade_count() == 0:
-            if current_time.minute % 15 == 0 and current_time.second < 10:
-                if last_checked != current_time.minute:
-                    print(f"Current time: {current_time}")
-                    print("Checking for trade signals")
-                    ema_crossover(candles(), "EUR_USD")
-                    last_checked = current_time.minute
+        try:
+            if get_trade_count() == 0:
+                if current_time.minute % 15 == 0 and current_time.second < 10:
+                    if last_checked != current_time.minute:
+                        print(f"Current time: {current_time}")
+                        print("Checking for trade signals")
+                        ema_crossover(candles(), "EUR_USD")
+                        last_checked = current_time.minute
 
-            time.sleep(1)
-        else:
+                time.sleep(1)
+            else:
+                pass
+        except Exception as e:
+            print(f"Error occurred at {current_time}: {e}")
             pass
 
 def test_bot():
@@ -140,8 +144,6 @@ def test_bot_1M():
 
         time.sleep(1)
 
-
-
-# run_bot()
-test_bot()
+run_bot()
+# test_bot()
 # test_bot_1M()
