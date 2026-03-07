@@ -28,5 +28,3 @@ def run_bot():
             pass
 
 run_bot()
-
-f = "a"
