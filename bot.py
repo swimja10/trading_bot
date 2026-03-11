@@ -17,28 +17,6 @@ units = (get_account_balance() * 50.0) * .25
 units_str = str(int(units))
 # test_units = 1
 
-# def safe_request(client, r, *, max_retries=6, base_delay=1.0):
-#     last_exc = None
-
-#     for attempt in range(1, max_retries + 1):
-#         try:
-#             return client.request(r)
-
-#         except V20Error as e:
-#             last_exc = e
-#             msg = str(e)
-
-#             snippet = msg[:240].replace("\n", " ")
-#             is_html = ("<!doctype html" in msg.lower()) or ("<html" in msg.lower())
-
-#             print(f"[OANDA ERROR] attempt={attempt}/{max_retries} html={is_html} snippet={snippet}")
-
-#             delay = base_delay * (2 ** (attempt - 1))
-#             delay = delay + random.uniform(0, 0.25 * delay)
-#             time.sleep(delay)
-
-#     raise last_exc
-
 def calculate_indicators(candles):
     #EMAS
     candles["EMA_5"] = ta.ema(candles["close"], length = 5)
