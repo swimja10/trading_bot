@@ -1,7 +1,6 @@
 import pandas_ta as ta
 import config
 from config import client
-import random
 import oandapyV20.endpoints.orders as orders
 from oanda_account_details import get_account_balance, get_trade_count
 from oandapyV20.exceptions import V20Error
@@ -10,6 +9,7 @@ import time
 from live_candles import live_EURUSD_candles
 from datetime import datetime, timezone
 import time
+import sys
 
 # instrument = "EUR_USD"
 
@@ -100,8 +100,14 @@ def run_bot():
                 time.sleep(1)
             else:
                 pass
+        except KeyboardInterrupt:
+            print("\nBYE!")
+            sys.exit()
         except Exception as e:
             print(f"Error occurred at {current_time}: {e}")
+            pass
+        except V20Error:
+            print(f"V20 error occured at {current_time}")
             pass
 
 def test_bot():
