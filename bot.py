@@ -18,9 +18,6 @@ def calculate_indicators(candles):
     candles["EMA_8"] = ta.ema(candles["close"], length = 8)
     candles["SMA_5"] = ta.sma(candles["close"], length = 8)
 
-    # ATR
-    candles["ATR_14"] = ta.atr(candles["high"], candles["low"], candles["close"], length=14)
-
     return candles
 
 # Function to check for EMA Crossover signals
@@ -56,7 +53,7 @@ def run_bot():
                     if last_checked != current_time.minute:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
-                        ema_crossover(live_candles("M15", "EUR_USD"), "EUR_USD")
+                        ema_crossover(calculate_indicators(live_candles(granularity="M15", instrument="EUR_USD")), "EUR_USD")
                         last_checked = current_time.minute
 
                 time.sleep(1)
