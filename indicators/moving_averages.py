@@ -1,15 +1,20 @@
 def average(prices):
-    total_price = 0
-    for price in prices:
-        total_price += price
-    average = total_price/len(prices)
-    return average
+    if not prices:
+        raise ValueError("Price list cannot be empty")
+    return sum(prices)/len(prices)
 
 def SMA(prices, window_size):
     if len(prices) < window_size:
-        return 0
-    sma = []
-    for i in range(len(prices) - window_size + 1):
-        window = prices[i:i+window_size]
-        sma.append(average(window))
-    return sma[-1]
+        return None
+    return sum(prices[-window_size:]) / window_size
+
+prices = [1.1050, 1.1060, 1.1040, 1.1070, 1.1080]
+
+print(SMA(prices=prices, window_size=3))
+
+average_indicators = {
+    "Average": average(prices),
+    "SMA5": SMA(prices, 5),
+    "SMA8": SMA(prices, 8),
+    "SMA200": SMA(prices, 200)
+}

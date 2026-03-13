@@ -1,7 +1,4 @@
-from live_candles import live_candles
 from orders import place_order
-from datetime import datetime, timezone
-import time
 
 
 

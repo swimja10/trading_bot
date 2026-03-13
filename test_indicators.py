@@ -12,7 +12,7 @@ def run_bot():
         if current_time.minute % 1 == 0 and current_time.second < 10:
             if last_checked != current_time.minute:
                 print(f"Current time: {current_time}")
-                sma = SMA(live_candles("M1")["close"], 5)
+                sma = SMA(live_candles(granularity="M1", instrument="EUR_USD")["close"], 5)
                 print(sma)
                 last_checked = current_time.minute 
 

@@ -2,7 +2,7 @@ import oandapyV20.endpoints.instruments as instruments
 import pandas as pd
 from config import client
 
-def live_candles(granularity="M15", instrument="EUR_USD"):
+def live_candles(granularity, instrument):
     params = {
         "granularity" : granularity,
         "price": "A" # Ask price
@@ -26,3 +26,4 @@ def live_candles(granularity="M15", instrument="EUR_USD"):
     candles = pd.DataFrame(data)
     candles["time"] = pd.to_datetime(candles["time"])
     return candles
+
