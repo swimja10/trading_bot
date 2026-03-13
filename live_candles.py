@@ -2,13 +2,13 @@ import oandapyV20.endpoints.instruments as instruments
 import pandas as pd
 from config import client
 
-def live_EURUSD_candles(granularity):
+def live_candles(granularity="M15", instrument="EUR_USD"):
     params = {
         "granularity" : granularity,
         "price": "A" # Ask price
     }
 
-    r = instruments.InstrumentsCandles(instrument="EUR_USD", params=params)
+    r = instruments.InstrumentsCandles(instrument, params=params)
     candles = client.request(r)['candles']
 
     data = []

@@ -13,7 +13,6 @@ equity_timeseries = []
 position_size = 10000
 closed_prices = []
 
-
 for candle in data['candles']:
 
     o = float(candle['mid']['o'])
@@ -26,18 +25,17 @@ for candle in data['candles']:
     last_price = c
     closed_prices.append(last_price)
     previous_candle = closed_prices[:-1]
-    print(closed_prices[:-500])
 
-    # print(candle['time'])
-    # if last_price != 0:
-    #     equity += (c - last_price) * market_position
+    print(candle['time'])
+    if last_price != 0:
+        equity += (c - last_price) * market_position
 
-    # if SMA(closed_prices[:-500], 5) > SMA(closed_prices[:-500], 8) and SMA(previous_candle[:-500], 5) < SMA(previous_candle[:-500], 8):
-    #     market_position = position_size
-    #     print("Bought")
-    # elif SMA(closed_prices[:-500], 5) < SMA(closed_prices[:-500], 8) and SMA(previous_candle[:-500], 5) > SMA(previous_candle[:-500], 8):
-    #     market_position = -position_size
-    #     print("Shorted")
+    if SMA(closed_prices, 5) > SMA(closed_prices, 8) and SMA(previous_candle, 5) < SMA(previous_candle, 8):
+        market_position = position_size
+        print("Bought")
+    elif SMA(closed_prices, 5) < SMA(closed_prices, 8) and SMA(previous_candle, 5) > SMA(previous_candle, 8):
+        market_position = -position_size
+        print("Shorted")
 
 plt.plot(equity_timeseries)
 plt.title("Simple Linear Backtest")

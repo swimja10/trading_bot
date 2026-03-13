@@ -1,7 +1,6 @@
 import config
 from config import OANDA_ACCOUNT_ID, client
 import oandapyV20.endpoints.accounts as accounts
-import oandapyV20.endpoints.trades as trades
 
 def get_trade_count():
     r = accounts.AccountDetails(OANDA_ACCOUNT_ID)

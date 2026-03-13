@@ -1,21 +1,17 @@
 import pandas_ta as ta
-import config
-from config import client
-import oandapyV20.endpoints.orders as orders
+from orders import place_order
 from oanda_account_details import get_account_balance, get_trade_count
 from oandapyV20.exceptions import V20Error
 from datetime import datetime
 import time
-from live_candles import live_EURUSD_candles
+from live_candles import live_candles
 from datetime import datetime, timezone
 import time
 import sys
 
-# instrument = "EUR_USD"
 
 units = (get_account_balance() * 50.0) * .25
 units_str = str(int(units))
-# test_units = 1
 
 def calculate_indicators(candles):
     #EMAS
@@ -27,22 +23,6 @@ def calculate_indicators(candles):
     candles["ATR_14"] = ta.atr(candles["high"], candles["low"], candles["close"], length=14)
 
     return candles
-
-def place_order(stop_loss, take_profit, instrument, units):
-    data = {
-        "order": {
-            "instrument": instrument,
-            "units": units,
-            "type": "MARKET",
-            "stopLossOnFill": {"price": f"{stop_loss:.3f}"},
-            "takeProfitOnFill": {"price": f"{take_profit:.3f}"},
-
-        }
-    }
-
-    r = orders.OrderCreate(config.OANDA_ACCOUNT_ID, data=data)
-    client.request(r)
-    print(f"Placed order for {instrument} with stop loss at {round(stop_loss, 3)} and take profit at {round(take_profit)}")
 
 # Function to check for EMA Crossover signals
 
@@ -73,11 +53,13 @@ def test_trade(candles, instrument, units):
     DISTANCE = PIPS_DESIRED * PIP_VALUE
     stop_loss = entry_price - DISTANCE
     take_profit = entry_price + .0005
-    place_order(stop_loss, take_profit, instrument, units)
+    place_order()
+
+
 
 def candles():
-    candles = live_EURUSD_candles("M15")
-    candles = calculate_indicators(candles)
+    candles = live_candles("M15")
+    # candles = calculate_indicators(candles)
     return candles
 
 
@@ -94,7 +76,7 @@ def run_bot():
                     if last_checked != current_time.minute:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
-                        ema_crossover(candles(), "EUR_USD")
+                        ema_crossover(live_candles("M15", "EUR_USD"), "EUR_USD")
                         last_checked = current_time.minute
 
                 time.sleep(1)
@@ -128,6 +110,6 @@ def test_bot_1M():
 
         time.sleep(1)
 
-run_bot()
-# test_bot()
+# run_bot()
+test_bot()
 # test_bot_1M()
