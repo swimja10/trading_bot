@@ -6,7 +6,12 @@ def average(prices):
 def SMA(prices, window_size):
     if len(prices) < window_size:
         return None
-    return sum(prices[-window_size:]) / window_size
+
+    sma = []
+    for i in range(len(prices) - window_size + 1):
+        sma.append(sum(prices[i:i+window_size]) / window_size)
+
+    return sma
 
 prices = [1.1050, 1.1060, 1.1040, 1.1070, 1.1080]
 

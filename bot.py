@@ -18,9 +18,6 @@ def calculate_indicators(candles):
     candles["EMA_8"] = ta.ema(candles["close"], length = 8)
     candles["SMA_5"] = ta.sma(candles["close"], length = 8)
 
-    # ATR
-    candles["ATR_14"] = ta.atr(candles["high"], candles["low"], candles["close"], length=14)
-
     return candles
 
 # Function to check for EMA Crossover signals
@@ -39,7 +36,7 @@ def ema_crossover(candles, instrument):
         DISTANCE = PIPS_DESIRED * PIP_VALUE
         stop_loss = entry_price - DISTANCE
         take_profit = entry_price + .0005
-        place_order(stop_loss, take_profit, instrument, units_str)
+        place_order(stop_loss=stop_loss, take_profit=take_profit, type="MARKET", instrument=instrument, units=units_str)
     else:
         print("Strat not met")
 
@@ -56,7 +53,7 @@ def run_bot():
                     if last_checked != current_time.minute:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
-                        ema_crossover(live_candles("M15", "EUR_USD"), "EUR_USD")
+                        ema_crossover(calculate_indicators(live_candles(granularity="M15", instrument="EUR_USD")), "EUR_USD")
                         last_checked = current_time.minute
 
                 time.sleep(1)
