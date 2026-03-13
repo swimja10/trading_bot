@@ -3,13 +3,6 @@ from live_candles import live_candles
 import time
 from datetime import datetime, timezone
 
-
-
-def price():
-    price = live_candles("M1")
-    price = SMA(price)
-    return price
-
 def run_bot():
     print("starting trading bot")
     last_checked = None
@@ -20,7 +13,7 @@ def run_bot():
             if last_checked != current_time.minute:
                 print(f"Current time: {current_time}")
                 sma = SMA(live_candles("M1")["close"], 5)
-                print(sma[-1])
+                print(sma)
                 last_checked = current_time.minute 
 
             time.sleep(1)
