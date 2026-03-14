@@ -39,7 +39,7 @@ def ema_crossover(candles, instrument):
         DISTANCE = PIPS_DESIRED * PIP_VALUE
         stop_loss = entry_price - DISTANCE
         take_profit = entry_price + .0005
-        place_order(stop_loss, take_profit, instrument, units_str)
+        place_order(stop_loss, take_profit, instrument, units_str, last_candle)
     else:
         print("Strat not met")
 

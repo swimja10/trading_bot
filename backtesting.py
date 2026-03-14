@@ -2,15 +2,33 @@ import json
 import matplotlib.pyplot as plt
 from indicators.moving_averages import SMA
 
+def simulate_trade(current_position, new_position, current_price, entry_price, equity):
+    if current_position != 0 and current_position != new_position:
+        pnl = (current_price - entry_price) * current_position
+        equity += pnl
+        action = "Sell" if current_position > 0 else "Buy"
+        print(f"{action} to close position at {current_price} | Realized PnL: ${pnl:.2f} | Equity: ${equity:.2f}")
+
+    if current_position != new_position and new_position != 0:
+        action = "Buy" if new_position > 0 else "Sell"
+        print(f"{action} to open position at {current_price}")
+        entry_price = current_price
+
+    return new_position, entry_price, equity
+
+# with open("EURUSD1M_test.json", "r") as f:
+#     data = json.load(f)
+
 with open("EURUSD1M.json", "r") as f:
     data = json.load(f)
+
 
 initial_capital = 1000
 equity = initial_capital
 market_position = 0
-last_price = 0
+entry_price = 0
 equity_timeseries = []
-position_size = 10000
+position_size = equity * 50
 closed_prices = []
 
 for candle in data['candles']:
@@ -20,24 +38,25 @@ for candle in data['candles']:
     l = float(candle['mid']['l'])
     c = float(candle['mid']['c'])
 
-
     equity_timeseries.append(equity)
-    last_price = c
-    closed_prices.append(last_price)
+    closed_prices.append(c)
     previous_candle = closed_prices[:-1]
 
-    print(candle['time'])
-    if last_price != 0:
-        equity += (c - last_price) * market_position
-
-    if SMA(closed_prices, 5) > SMA(closed_prices, 8) and SMA(previous_candle, 5) < SMA(previous_candle, 8):
-        market_position = position_size
-        print("Bought")
-    elif SMA(closed_prices, 5) < SMA(closed_prices, 8) and SMA(previous_candle, 5) > SMA(previous_candle, 8):
-        market_position = -position_size
-        print("Shorted")
+    try:
+        new_position = market_position
+        # Longing
+        if SMA(closed_prices, 5) > SMA(closed_prices, 8) and SMA(previous_candle, 5) < SMA(previous_candle, 8):
+            new_position = position_size
+        # Shorting
+        elif SMA(closed_prices, 5) < SMA(closed_prices, 8) and SMA(previous_candle, 5) > SMA(previous_candle, 8):
+            new_position = -position_size
+            
+        market_position, entry_price, equity = simulate_trade(
+            market_position, new_position, c, entry_price, equity
+        )
+    except:
+        pass
 
 plt.plot(equity_timeseries)
 plt.title("Simple Linear Backtest")
 plt.show()
-
