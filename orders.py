@@ -3,11 +3,11 @@ from config import client
 import oandapyV20.endpoints.orders as orders
 
 
-def place_order(stop_loss=None, take_profit=None, type="MARKET", instrument="EUR_USD", units="1"):
+def place_order(stop_loss, take_profit, type, instrument, units):
     try:
         data = {
             "order": {
-                "instrument": instrument,
+                "instrument": instrument.upper(),
                 "units": units,
                 "type": type.upper(),
                 "stopLossOnFill": {"price": f"{stop_loss:.3f}"},

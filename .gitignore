@@ -4,3 +4,4 @@ config.py
 EURUSD1M.json
 __pycache__/
 *.pyc
+EURUSD1M_test.json

@@ -15,7 +15,6 @@ def SMA(prices, window_size):
 
 prices = [1.1050, 1.1060, 1.1040, 1.1070, 1.1080]
 
-print(SMA(prices=prices, window_size=3))
 
 average_indicators = {
     "Average": average(prices),
