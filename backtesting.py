@@ -24,6 +24,7 @@ def simulate_trade(current_position, new_position, current_price, entry_price, e
 #     data = json.load(f)
 
 
+
 initial_capital = 1000
 equity = initial_capital
 market_position = 0
