@@ -1,4 +1,3 @@
-import json
 import matplotlib.pyplot as plt
 from indicators.moving_averages import SMA
 from candles import normalize_backtest_candles
