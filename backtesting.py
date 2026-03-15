@@ -1,6 +1,7 @@
 import json
 import matplotlib.pyplot as plt
 from indicators.moving_averages import SMA
+from candles import normalize_backtest_candles
 
 def simulate_trade(current_position, new_position, current_price, entry_price, equity):
     if current_position != 0 and current_position != new_position:
@@ -19,8 +20,8 @@ def simulate_trade(current_position, new_position, current_price, entry_price, e
 # with open("EURUSD1M_test.json", "r") as f:
 #     data = json.load(f)
 
-with open("EURUSD1M.json", "r") as f:
-    data = json.load(f)
+# with open("EURUSD1M.json", "r") as f:
+#     data = json.load(f)
 
 
 initial_capital = 1000
@@ -29,30 +30,26 @@ market_position = 0
 entry_price = 0
 equity_timeseries = []
 position_size = equity * 50
-closed_prices = []
+closed_prices = normalize_backtest_candles("EURUSD1M_test.json")
+candles_done = []
+print(closed_prices)
 
-for candle in data['candles']:
-
-    o = float(candle['mid']['o'])
-    h = float(candle['mid']['h'])
-    l = float(candle['mid']['l'])
-    c = float(candle['mid']['c'])
-
+for candle in closed_prices:
+    candles_done.append(candle)
     equity_timeseries.append(equity)
-    closed_prices.append(c)
-    previous_candle = closed_prices[:-1]
+    previous_candle = candles_done[:-1]
 
     try:
         new_position = market_position
         # Longing
-        if SMA(closed_prices, 5) > SMA(closed_prices, 8) and SMA(previous_candle, 5) < SMA(previous_candle, 8):
+        if SMA(candles_done, 5) > SMA(candles_done, 8) and SMA(previous_candle, 5) < SMA(previous_candle, 8):
             new_position = position_size
         # Shorting
-        elif SMA(closed_prices, 5) < SMA(closed_prices, 8) and SMA(previous_candle, 5) > SMA(previous_candle, 8):
+        elif SMA(candles_done, 5) < SMA(candles_done, 8) and SMA(previous_candle, 5) > SMA(previous_candle, 8):
             new_position = -position_size
             
         market_position, entry_price, equity = simulate_trade(
-            market_position, new_position, c, entry_price, equity
+            market_position, new_position, candles_done[:-1], entry_price, equity
         )
     except:
         pass
