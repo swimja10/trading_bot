@@ -16,16 +16,6 @@ def simulate_trade(current_position, new_position, current_price, entry_price, e
 
     return new_position, entry_price, equity
 
-# with open("EURUSD1M_test.json", "r") as f:
-#     data = json.load(f)
-
-# with open("EURUSD1M.json", "r") as f:
-#     data = json.load(f)
-
-
-
-
-
 initial_capital = 1000
 equity = initial_capital
 market_position = 0

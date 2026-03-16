@@ -1,17 +1,19 @@
-import oandapyV20.endpoints.instruments as instruments
+import requests
 import pandas as pd, pandas
-from config import client
+from config import OANDA_ACCOUNT_ID, OANDA_PRACTICE_API, headers
 import json
+import time
 
-
-def live_candles(granularity, instrument):
-    params = {
-        "granularity": granularity,
-        "price": "A"
-    }
-
-    r = instruments.InstrumentsCandles(instrument, params=params)
-    raw_candles = client.request(r)["candles"]
+def get_live_candles(granularity, instrument):
+    url = OANDA_PRACTICE_API + f"/v3/accounts/{OANDA_ACCOUNT_ID}/candles/latest"
+    query = {
+            "instrument": instrument,
+             "granularity": granularity,
+             "PricingComponent": "A",
+             }
+    response = requests.get(url, headers=headers, params=query)
+    json_response = response.json()
+    raw_candles = json_response["candles"]
     normalized_candles = normalize_oanda_candles(raw_candles)
     return candles_to_dataframe(normalized_candles)
 
@@ -25,31 +27,30 @@ def normalize_oanda_candles(raw_candles):
             normalized.append({
                 "date": clean_time["date"],
                 "time": clean_time["time"],
-                "open": float(candle["ask"]["o"]),
-                "high": float(candle["ask"]["h"]),
-                "low": float(candle["ask"]["l"]),
-                "close": float(candle["ask"]["c"]),
+                "open": float(candle["mid"]["o"]),
+                "high": float(candle["mid"]["h"]),
+                "low": float(candle["mid"]["l"]),
+                "close": float(candle["mid"]["c"]),
             })
 
     return normalized
 
-def normalize_backtest_candles(file_name):
-    normalized = []
 
-    with open(file_name, "r") as f:
-        data = json.load(f)
-    
-    for candle in data['candles']:
-        clean_time = date_splitter(candle["time"])
-        normalized.append(build_candle(
-            date=clean_time["date"],
-            time=clean_time["time"],
-            open=candle["mid"]["o"],
-            high=candle["mid"]["h"],
-            low=candle["mid"]["l"],
-            close=candle["mid"]["c"],
-        ))
-    return candles_to_dataframe(normalized)
+# The time has to be like "01/01/2026"
+def get_backtest_candles(granularity, instrument, from_time, to_time):
+    url = OANDA_PRACTICE_API + f"/v3/accounts/{OANDA_ACCOUNT_ID}/candles/latest"
+    query = {
+            "instrument": instrument,
+             "granularity": granularity,
+             "PricingComponent": "A",
+             "from": time.mktime(pd.to_datetime(from_time).timetuple()),
+             "to": time.mktime(pd.to_datetime(to_time).timetuple())
+             }
+    response = requests.get(url, headers=headers, params=query)
+    json_response = response.json()
+    raw_candles = json_response["candles"]
+    normalized_candles = normalize_oanda_candles(raw_candles)
+    return candles_to_dataframe(normalized_candles)
 
 def build_candle(date, time, open, high, low, close):
     return {
@@ -60,6 +61,52 @@ def build_candle(date, time, open, high, low, close):
         "low": float(low),
         "close": float(close),
     }
+
+def get_live_ticks(instrument):
+    PRICING_PATH =  f"/v3/accounts/{OANDA_ACCOUNT_ID}/pricing"
+    url =OANDA_PRACTICE_API + PRICING_PATH
+    query = {"instruments": instrument} 
+    response = requests.get(url, headers=headers, params=query)
+    response_json = response.json()
+    raw_ticks = response_json["prices"]
+    normalized_ticks = normalize_oanda_ticks(raw_ticks)
+    return candles_to_dataframe(normalized_ticks)
+
+def build_ticks(date, time, bid, ask, mid, spread, bid_liquidity, ask_liquidity, tradeable):
+    return {
+        "date": date,
+        "time": time,
+        "bid": bid,
+        "ask": ask,
+        "mid": mid,
+        "spread": spread,
+        "bid_liquidity": bid_liquidity,
+        "ask_liquidity": ask_liquidity,
+        "tradeable": tradeable
+    }
+
+
+
+def normalize_oanda_ticks(raw_ticks):
+    normalized = []
+
+    for tick in raw_ticks:
+        bid = float(tick["bids"][0]["price"])
+        ask = float(tick["asks"][0]["price"])
+        clean_time = date_splitter(tick["time"])
+
+        normalized.append(build_ticks(
+            date=clean_time["date"],
+            time=clean_time["time"],
+            bid=bid,
+            ask=ask,
+            mid=(bid + ask) / 2,
+            spread = ask - bid,
+            bid_liquidity=tick["bids"][0]["liquidity"],
+            ask_liquidity=tick["asks"][0]["liquidity"],
+            tradeable=tick["tradeable"]    
+        ))
+    return normalized
 
 def candles_to_dataframe(candles):
     df = pd.DataFrame(candles)

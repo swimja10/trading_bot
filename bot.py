@@ -3,7 +3,7 @@ from orders import place_order
 from oanda_account_details import get_account_balance, get_trade_count
 from oandapyV20.exceptions import V20Error
 from datetime import datetime
-from candles import live_candles
+from candles import get_live_candles
 from datetime import datetime, timezone
 import time
 import sys
@@ -53,7 +53,7 @@ def run_bot():
                     if last_checked != current_time.minute:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
-                        ema_crossover(calculate_indicators(live_candles(granularity="M15", instrument="EUR_USD")), "EUR_USD")
+                        ema_crossover(calculate_indicators(get_live_candles(granularity="M15", instrument="EUR_USD")), "EUR_USD")
                         last_checked = current_time.minute
 
                 time.sleep(1)
