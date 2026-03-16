@@ -77,7 +77,4 @@ def date_splitter(time):
     minute = time[1]
     minute = minute[:8]
     cleaned_date["time"] = minute
-
     return cleaned_date
-
-    
