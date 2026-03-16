@@ -3,7 +3,7 @@ from orders import place_order
 from oanda_account_details import get_account_balance, get_trade_count
 from oandapyV20.exceptions import V20Error
 from datetime import datetime
-from live_candles import live_candles
+from candles import live_candles
 from datetime import datetime, timezone
 import time
 import sys
