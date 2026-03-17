@@ -1,5 +1,5 @@
 import pandas_ta as ta
-from orders import place_order
+from orders import place_oanda_order
 from oanda_account_details import get_oanda_account_balance, get_oanda_open_trade_count
 from oandapyV20.exceptions import V20Error
 from datetime import datetime
@@ -36,7 +36,7 @@ def ema_crossover(candles, instrument):
         DISTANCE = PIPS_DESIRED * PIP_VALUE
         stop_loss = entry_price - DISTANCE
         take_profit = entry_price + .0005
-        place_order(stop_loss=stop_loss, take_profit=take_profit, type="MARKET", instrument=instrument, units=units_str)
+        place_oanda_order(stop_loss=stop_loss, take_profit=take_profit, type="MARKET", instrument=instrument, units=units_str)
     else:
         print("Strat not met")
 
