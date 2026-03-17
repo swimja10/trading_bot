@@ -15,5 +15,3 @@ def get_oanda_account_balance():
     response = requests.get(url, headers=headers)
     json_response = response.json()
     return json_response['account']["balance"]
-
-print(get_oanda_open_trade_count())

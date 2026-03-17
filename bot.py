@@ -1,6 +1,6 @@
 import pandas_ta as ta
 from orders import place_order
-from oanda_account_details import get_account_balance, get_trade_count
+from oanda_account_details import get_oanda_account_balance, get_oanda_open_trade_count
 from oandapyV20.exceptions import V20Error
 from datetime import datetime
 from candles import get_live_candles
@@ -9,7 +9,7 @@ import time
 import sys
 
 
-units = (get_account_balance() * 50.0) * .25
+units = (get_oanda_account_balance() * 50.0) * .25
 units_str = str(int(units))
 
 def calculate_indicators(candles):
@@ -48,7 +48,7 @@ def run_bot():
     while True:
         current_time = datetime.now(timezone.utc)
         try:
-            if get_trade_count() == 0:
+            if get_oanda_open_trade_count() == 0:
                 if current_time.minute % 15 == 0 and current_time.second < 10:
                     if last_checked != current_time.minute:
                         print(f"Current time: {current_time}")
