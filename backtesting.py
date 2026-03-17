@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from indicators.moving_averages import SMA
-from candles import normalize_backtest_candles
+from candles import get_backtest_candles
 
 def simulate_trade(current_position, new_position, current_price, entry_price, equity):
     if current_position != 0 and current_position != new_position:
@@ -22,7 +22,7 @@ market_position = 0
 entry_price = 0
 equity_timeseries = []
 position_size = equity * 50
-closed_prices = normalize_backtest_candles("EURUSD1M_test.json")
+closed_prices = get_backtest_candles(granularity='H4', instrument='EUR_USD', from_time='03/05/2005', to_time='04/06/2005')
 candles_done = []
 print(closed_prices)
 

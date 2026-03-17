@@ -49,8 +49,8 @@ def run_bot():
         current_time = datetime.now(timezone.utc)
         try:
             if get_oanda_open_trade_count() == 0:
-                if current_time.minute % 15 == 0 and current_time.second < 10:
-                    if last_checked != current_time.minute:
+                if current_time.minute % 5 == 0:
+                    if last_checked != current_time.minute and current_time.second < 10:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
                         ema_crossover(calculate_indicators(get_live_candles(granularity="M15", instrument="EUR_USD")), "EUR_USD")

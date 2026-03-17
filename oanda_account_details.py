@@ -14,4 +14,4 @@ def get_oanda_account_balance():
     url = OANDA_PRACTICE_API + f"/v3/accounts/{OANDA_ACCOUNT_ID}/summary"
     response = requests.get(url, headers=headers)
     json_response = response.json()
-    return json_response['account']["balance"]
+    return float(json_response['account']["balance"])
