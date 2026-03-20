@@ -16,4 +16,4 @@ def place_oanda_order(order_type, instrument, units, stop_loss, take_profit):
         }
     response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
-    return f"Placed order for {instrument} with stop loss at {round(stop_loss, 3)} and take profit at {round(take_profit, 3)}"
+    return

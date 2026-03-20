@@ -22,7 +22,7 @@ market_position = 0
 entry_price = 0
 equity_timeseries = []
 position_size = equity * 50
-closed_prices = get_backtest_candles(granularity='H4', instrument='EUR_USD', from_time='03/05/2005', to_time='04/06/2005')
+closed_prices = get_backtest_candles(granularity='H4', instrument='EUR_USD', from_time='11/03/2005', to_time='12/06/2005')
 candles_done = []
 print(closed_prices)
 

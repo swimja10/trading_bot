@@ -1,7 +1,6 @@
 import pandas_ta as ta
 from orders import place_oanda_order
 from oanda_account_details import get_oanda_account_balance, get_oanda_open_trade_count
-from oandapyV20.exceptions import V20Error
 from datetime import datetime
 from candles import get_live_candles
 from datetime import datetime, timezone
@@ -36,7 +35,9 @@ def ema_crossover(candles, instrument):
         DISTANCE = PIPS_DESIRED * PIP_VALUE
         stop_loss = entry_price - DISTANCE
         take_profit = entry_price + .0005
-        place_oanda_order(stop_loss=stop_loss, take_profit=take_profit, type="MARKET", instrument=instrument, units=units_str)
+        place_oanda_order(stop_loss=stop_loss, take_profit=take_profit, order_type="MARKET", instrument=instrument, units=units_str)
+        print(f"Placed order for {instrument} at {entry_price} with stop loss at {round(stop_loss, 3)} and take profit at {round(take_profit, 3)}")
+        
     else:
         print("Strat not met")
 
@@ -49,7 +50,7 @@ def run_bot():
         current_time = datetime.now(timezone.utc)
         try:
             if get_oanda_open_trade_count() == 0:
-                if current_time.minute % 5 == 0:
+                if current_time.minute % 15 == 0:
                     if last_checked != current_time.minute and current_time.second < 10:
                         print(f"Current time: {current_time}")
                         print("Checking for trade signals")
@@ -64,9 +65,6 @@ def run_bot():
             sys.exit()
         except Exception as e:
             print(f"Error occurred at {current_time}: {e}")
-            pass
-        except V20Error:
-            print(f"V20 error occured at {current_time}")
             pass
 
 run_bot()

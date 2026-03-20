@@ -15,3 +15,4 @@ def get_oanda_account_balance():
     response = requests.get(url, headers=headers)
     json_response = response.json()
     return float(json_response['account']["balance"])
+
